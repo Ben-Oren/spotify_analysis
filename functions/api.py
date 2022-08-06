@@ -10,6 +10,43 @@ import requests
 BASE_URL = 'https://api.spotify.com/v1/'
 
 
+## Account-Specific
+
+CLIENT_ID = '1c2e33a8bebd41fbbb8a1ecf0e8c4273'
+CLIENT_SECRET = '4964098dcc7b41f99c4178e6403645c1'
+
+AUTH_URL = 'https://accounts.spotify.com/api/token'
+
+user_id = 'bothsidesdoit'
+
+## Acquire access token and set authorization header
+
+# POST
+auth_response = requests.post(AUTH_URL, {
+    'grant_type' : 'client_credentials', 
+    'client_id' : CLIENT_ID,
+    'client_secret' : CLIENT_SECRET,   
+})
+
+# convert response to json
+auth_response_data = auth_response.json()
+
+# save the access token
+access_token = auth_response_data['access_token']
+
+# save in header
+
+headers = {
+    'Authorization' : 
+        'Bearer {token}'
+        .format(
+            token=access_token
+        )
+}
+
+
+
+
 ### Functions
 
 
@@ -45,7 +82,7 @@ def parse_playlist_song_ids(playlist_url_response):
     '''
     
     return [
-    single_playlist_request
+    playlist_url_response
         ['tracks']
         ['items']
         [track]
@@ -99,7 +136,7 @@ def get_spotify_features(playlist_url):
     output:
         df of spotify features for that playlist
     '''
-    
+        
     playlist_response = get_playlist_response(
         playlist_url
     )
