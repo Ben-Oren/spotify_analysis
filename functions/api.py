@@ -150,3 +150,24 @@ def get_spotify_features(playlist_url):
     )
     
     return spotify_features
+
+
+def get_raw_data_track(song_id):
+    '''
+    GET the low-level features of a single track through API call
+    
+    input:
+        track_id - unique track ID in spotify api db
+        str
+        
+    output:
+        df of result of API call: low-level variables of single track
+    '''
+    
+    data = requests.get(
+    BASE_URL + 'audio-analysis/' + '6y0igZArWVi6Iz0rj35c1Y',
+    headers=headers
+    ) \
+    .json()
+    
+    return data
