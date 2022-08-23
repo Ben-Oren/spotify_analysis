@@ -180,7 +180,7 @@ def get_raw_data_track(song_id):
     '''
     
     data = requests.get(
-    BASE_URL + 'audio-analysis/' + '6y0igZArWVi6Iz0rj35c1Y',
+    BASE_URL + 'audio-analysis/' + song_id,
     headers=headers
     ) \
     .json()
@@ -254,7 +254,7 @@ def unpack_selected_json(track_raw_json, track_raw_json_key, cols):
     return frame
 
 
-def unpack_json(track_raw_json, columns_dictionary=default_track_dictionary):
+def unpack_json(track_raw_json, id, columns_dictionary=default_track_dictionary):
     '''
     unpack the nested dictionaries from a result of a POST request for a specific track's low-level audio analysis data
 
@@ -300,4 +300,10 @@ def unpack_json(track_raw_json, columns_dictionary=default_track_dictionary):
 
                 frame_list.append(frame)
 
-    return frame_list
+    #concat all the frames together in one row
+    
+    track_frame = pd.concat(frame_list, axis=1)
+    
+    track_frame['id'] = id
+    
+    return track_frame
