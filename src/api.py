@@ -108,7 +108,7 @@ def parse_playlist_song_ids(playlist_url_response):
     in
         range(
             0, 
-            len(playlist_url_response['tracks'])
+            len(playlist_url_response['tracks']['items'])
         )
     ]
 
@@ -307,3 +307,100 @@ def unpack_json(track_raw_json, id, columns_dictionary=default_track_dictionary)
     track_frame['id'] = id
     
     return track_frame
+
+def unpack_playlist_metadata(playlist_response, track_number=0):
+    '''
+    put each track's metadata from playlist RESPONSE into dict and zip w/ track id from playlist
+    
+    input:
+        playlist_response: RESPONSE from playlist GET
+        json
+        
+        track_number: element in list corresponding to playlist track being unpacked
+        
+    output:
+        df of track metadata, all one row
+    '''
+    
+    base = playlist_response['tracks']['items'][track_number]['track']
+    
+    song_metadata_dict = {
+    'id': base['id'],
+    'popularity': base['popularity'],
+    'artist': base['artists'][0]['name'],
+    'artist_type': base['artists'][0]['type'],
+    'album_type': base['album']['album_type'],
+    'album_release_date': base['album']['release_date'],
+    'release_precision': base['album']['release_date_precision'],
+    'track_name': base['name'],
+    'track_flag': base['track'],
+    'track_type': base['type'],
+    'episode': base['episode']
+}
+    
+    frame = pd.DataFrame(
+        song_metadata_dict, 
+        index=[0]
+    )
+    
+    return frame
+
+def raw_data_from_playlist(playlist_url):
+    '''
+    GETS playlist info from playlist api url
+    
+    unpacks track IDs into list and metadata json into frames
+    
+    GETS low-level audio data
+    
+    unpacks data into json
+    
+    merges metadata and audio data on track id
+    
+    input:
+        playlist_url: url of specific playlist through api 
+        str
+        
+    output:
+        df containing low-level audio data and metadata
+        df object
+        
+        one track per row
+        low-level audio data is flat and sparse
+        
+    '''
+    
+    # GET overall data from specific playlist data
+    playlist_response = get_playlist_response(playlist_url)
+
+    # parse song IDs in RESPONSE from sp. playlist 
+    song_ids = parse_playlist_song_ids(playlist_response)
+
+    # GET track info and unpack json into list
+    track_frames = [
+    unpack_json(
+        get_raw_data_track(song_id),
+        song_id
+    )
+    for song_id
+    in song_ids
+    ]
+
+    # concat track info into one frame
+    tracks_frame = pd.concat(track_frames)
+
+    # create frames of track metadata in list
+    metadata_list = [
+        unpack_playlist_metadata(playlist_response, track_number)
+        for track_number
+        in range(0, len(playlist_response['tracks']['items'])
+                )
+    ] 
+
+    # concat metadata frames into one
+    metadata_frame = pd.concat(metadata_list)
+
+    # merge track info and metatdata frames on track id
+    frame = pd.merge(tracks_frame, metadata_frame, on='id')
+    
+    return frame
