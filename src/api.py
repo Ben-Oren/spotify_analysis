@@ -64,6 +64,49 @@ headers = {
 
 ## GET data
 
+def get_playlist_urls(user_id):
+    
+    '''
+    GETS playlist API urls from specific user
+    
+    input:
+        user_id: unique user identifier from spotify API
+        str
+        
+    output:
+        list of zipped tuples (playlist name, playlist API url)
+        list of tuples object
+    '''
+    
+    user_profile = requests.get(BASE_URL + 'users/' + user_id + '/playlists', headers=headers)
+
+    user_profile = user_profile.json()
+    
+    playlist_number = len(user_profile['items'])
+    
+    playlist_urls = [
+        user_profile['items'][number]['href']
+        for number 
+        in range(0, playlist_number)
+    ]
+    
+    playlist_names = [
+        user_profile['items'][number]['name']
+        for number 
+        in range (0, playlist_number)
+    ]
+    
+    return list(
+        zip(
+            playlist_names,
+            playlist_urls
+        )
+    
+    )
+    
+    
+    
+
 
 def get_playlist_response(playlist_url):
     '''
