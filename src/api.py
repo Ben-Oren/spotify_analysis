@@ -443,7 +443,7 @@ def raw_data_from_playlist(playlist_url):
     # concat metadata frames into one
     metadata_frame = pd.concat(metadata_list)
 
-    # merge track info and metatdata frames on track id
+    # merge track info and metadata frames on track id
     frame = pd.merge(tracks_frame, metadata_frame, on='id')
     
     return frame
