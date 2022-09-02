@@ -4,6 +4,11 @@ musicbrainz
 # Private keys
 private_keys.py
 
+# Cruft
+.ipynb_checkpoints/
+.DS_Store/
+
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
