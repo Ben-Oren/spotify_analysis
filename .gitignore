@@ -1,6 +1,8 @@
 # Too large data
 musicbrainz
 
+# Private keys
+private_keys
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
