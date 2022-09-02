@@ -3,6 +3,7 @@
 import pandas as pd
 import numpy as np
 import requests
+import private_keys
 
 
 ### Objects
@@ -25,8 +26,8 @@ default_track_dictionary = {
 
 ## Account-Specific
 
-CLIENT_ID = '1c2e33a8bebd41fbbb8a1ecf0e8c4273'
-CLIENT_SECRET = '4964098dcc7b41f99c4178e6403645c1'
+CLIENT_ID = private_keys.CLIENT_ID
+CLIENT_SECRET = private_keys.CLIENT_SECRET
 
 AUTH_URL = 'https://accounts.spotify.com/api/token'
 
